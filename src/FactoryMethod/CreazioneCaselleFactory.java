@@ -3,7 +3,6 @@ package FactoryMethod;
 import Enumerations.TipoCasellaSpeciale;
 import FactoryMethod.Caselle.*;
 
-
 import java.util.Random;
 
 public class CreazioneCaselleFactory {

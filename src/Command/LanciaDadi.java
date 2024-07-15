@@ -1,5 +1,7 @@
 package Command;
 
+import Observer.Gioco;
+
 import java.util.Random;
 
 public class LanciaDadi implements Azione{

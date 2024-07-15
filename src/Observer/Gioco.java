@@ -1,14 +1,15 @@
-package Command;
+package Observer;
 
+import Command.Player;
 import FactoryMethod.Caselle.Casella;
 import FactoryMethod.CreazioneCaselleFactory;
-import FactoryMethod.Tabellone;
 
+import javax.swing.*;
 import java.util.*;
 
 
-public class Gioco {
-
+public class Gioco implements Soggetto {
+    private List<Osservatore> osservatori;
     private static Tabellone tabellone;
     private static int numGiocatori;
     private static int nScale;
@@ -21,16 +22,19 @@ public class Gioco {
     private static ListIterator<Player> turno;
     private static boolean fineGioco;
     private static boolean manuale;
+    private boolean avanzamentoAutomatico;
 
 
     public Gioco(int righe, int colonne, int numGiocatori, int numScale, int numSerpenti, int numCaselleSpeciali, boolean doppio, boolean manuale, boolean avanzamentoAutomatico) throws InterruptedException {
         doppioDado = doppio;
         giocatori = new LinkedList<>();
+        osservatori = new ArrayList<>();
         Gioco.manuale=manuale;
         Gioco.numGiocatori=numGiocatori;
         nScale=numScale;
         nSerpenti=numSerpenti;
         nSpeciali=numCaselleSpeciali;
+        this.avanzamentoAutomatico=avanzamentoAutomatico;
 
 
         fineGioco = false;
@@ -40,11 +44,30 @@ public class Gioco {
             giocatori.add(new Player(i, tabellone, this));
         turno = giocatori.listIterator();
         inizioGioco = true;
+        notifyObservers();
 
-
+        if (avanzamentoAutomatico) {
+            avanzaAutomaticamente();
+        }
     }
 
 
+    public void attach(Osservatore o) {
+        osservatori.add(o);
+    }
+
+    @Override
+    public void detach(Osservatore o) {
+        osservatori.remove(o);
+    }
+
+
+    @Override
+    public void notifyObservers() {
+        for (Osservatore o : osservatori) {
+            o.update();
+        }
+    }
 
 
     public void setupTabellone(int righe, int colonne, int numScale, int numSerpenti, int numCaselleSpeciali) {
@@ -114,7 +137,25 @@ public class Gioco {
 
     }
 
+    public void avanzaAutomaticamente(){
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                while (!fineGioco) {
+                    Thread.sleep(1000);
+                    nextTurn();
 
+                }
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                notifyObservers();
+            }
+        };
+        worker.execute();
+    }
 
     private void setManualmente(int numScale, int numSerpenti) {
         int numCaselle=tabellone.getSize();
@@ -173,7 +214,18 @@ public class Gioco {
     }
 
 
+    public void nextTurn() {
+        if (inizioGioco && !fineGioco) {
+            if (!turno.hasNext()) {
+                turno = giocatori.listIterator();
+            }else {
+                Player p = turno.next();
+                p.turno();
+            }
+            notifyObservers();
 
+        }
+    }
 
     public static int getNumGiocatori() {
         return numGiocatori;
@@ -195,7 +247,9 @@ public class Gioco {
         return manuale;
     }
 
-
+    public boolean isAvanzamentoAutomatico() {
+        return avanzamentoAutomatico;
+    }
 
     public static boolean isDoppioDado() {
         return doppioDado;

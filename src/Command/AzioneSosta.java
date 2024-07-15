@@ -1,6 +1,5 @@
 package Command;
 
-
 import Enumerations.TipoSosta;
 
 public class AzioneSosta implements Azione {
