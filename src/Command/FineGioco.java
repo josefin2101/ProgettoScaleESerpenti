@@ -1,6 +1,6 @@
 package Command;
 
-import Observer.Gioco;
+
 
 public class FineGioco implements Azione{
 

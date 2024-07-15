@@ -1,9 +1,10 @@
-package Observer;
+package FactoryMethod;
 
 import FactoryMethod.Caselle.Casella;
 
 import java.util.HashMap;
 import java.util.Map;
+
 public class Tabellone {
     private int righe;
     private int colonne;
