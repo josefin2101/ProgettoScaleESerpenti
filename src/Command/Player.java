@@ -1,3 +1,9 @@
+package Command;
+
+import FactoryMethod.*;
+import FactoryMethod.Caselle.Casella;
+
+
 public class Player {
     private int id;
     private int ultimoLancio;
@@ -13,41 +19,25 @@ public class Player {
         ultimaPosizione=0;
         this.ultimoLancio=0;
         this.tabellone=tabellone;
-    }
 
-    public int getId() {
-        return id;
     }
 
 
-    public void turno() {
-        if(turniAttesa!=0){
-            turniAttesa-=1;
-        }
-        else {
-            lanciaDadi();
-            int nuovaPosizione = (posizione + ultimoLancio) > 100 ? (tabellone.getSize() - ((posizione + ultimoLancio) - tabellone.getSize())) : posizione + ultimoLancio;
-            System.out.println("Il Player " + id + " ha fatto " + ultimoLancio + " e si dirige verso la casella " + nuovaPosizione);
-            new Azione.Movimento().applica(this);
-            controllaCasellaDiArrivo(posizione);
-        }
-    }
+
+
+
 
     public void controllaCasellaDiArrivo(int posizione){
         if(Gioco.getCaselleSpeciali().containsKey(posizione)) {
             Casella c = Gioco.getCaselleSpeciali().get(posizione);
-            c.applyAction(this);
+            c.applicaAzione(this);
         }
     }
 
 
 
-    public void attendiTurni(int i) {
-        setTurniAttesa(i);
-        if(divietoDiSosta){
-            setTurniAttesa(0);
-            divietoDiSosta=false;
-        }
+    public int getId() {
+        return id;
     }
 
     public int getPosizione() {
@@ -63,7 +53,7 @@ public class Player {
     }
 
     public void lanciaDadi() {
-       new Azione.LanciaDadi().applica(this);
+       new LanciaDadi().applicaAzione(this);
     }
 
     public int getUltimoLancio() {
@@ -77,6 +67,16 @@ public class Player {
     public void conservaDivieto() {
         divietoDiSosta=true;
     }
+
+    public boolean usaDivietoDiSosta(){
+        if (divietoDiSosta) {
+            divietoDiSosta = false;
+            return true;
+        }
+        return false;
+
+    }
+
 
     public void setUltimoLancio(int i) {
         ultimoLancio=i;

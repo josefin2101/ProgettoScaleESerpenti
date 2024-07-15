@@ -1,3 +1,5 @@
+package Enumerations;
+
 public enum TipoCarta {
     panchina,
     locanda,

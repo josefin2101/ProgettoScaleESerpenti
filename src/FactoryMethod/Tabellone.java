@@ -1,5 +1,10 @@
+package FactoryMethod;
+
+import FactoryMethod.Caselle.Casella;
+
 import java.util.HashMap;
 import java.util.Map;
+
 public class Tabellone {
     private int righe;
     private int colonne;
@@ -17,14 +22,16 @@ public class Tabellone {
         caselle.put(c.getNumeroCasella(), c);
     }
 
-    public Casella getCasella(int number) {
-        return caselle.get(number);
-    }
-
     public int getSize(){
         return size;
     }
 
+    public int getRighe() {
+        return righe;
+    }
 
+    public int getColonne() {
+        return colonne;
+    }
 
 }
